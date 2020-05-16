@@ -22,11 +22,9 @@ TLDEDA001::PCA::PCA(std::vector<std::vector<double>> dimensions, int NumberOfDim
     CovarianceMatrix = CalculateCovarianceMatrix();
     EigenValues = CalculateEigenValues().reverse();
 
-    EigenVectors = Eigen::MatrixXd(NumberOfDimensions, NumberOfDimensions);
-    auto Temp = CalculateEigenVectors();
-    EigenVectors.col(0) = Temp.col(1);
-    EigenVectors.col(1) = Temp.col(0);
-
+    EigenVectors = CalculateEigenVectors();
+   
+    
     TotalVariance = CovarianceMatrix.coeff(0, 0) + CovarianceMatrix.coeff(1, 1);
 }
 
@@ -141,16 +139,28 @@ std::ostream & TLDEDA001::operator<<(std::ostream & os , const TLDEDA001::PCA & 
    os << "Results:" << std::endl;
 
     os<< std::endl;
+    for (int i = 0; i < PCAInstance.NumberOfDimensions; i++)
+    {
+    os << "Eigen Values: Principal Component "<<i+1 << std::endl;
+   os<< PCAInstance.getEigenValues().row(i) << std::endl;
+   os << std::endl;
+    }
+    
+   
 
-    os << "Eigen Values: " << std::endl;
-   os<< PCAInstance.getEigenValues() << std::endl;
+    
+   
+   for (int i = 1; i <= PCAInstance.NumberOfDimensions; i++)
+   {
+      os << "Eigen Vectors: Principal Component "<<i << std::endl;
+    os << PCAInstance.getEigenVectors().col(PCAInstance.NumberOfDimensions-i) << std::endl;
 
     os << std::endl;
+   }
+   
 
-    os << "Eigen Vectors: " << std::endl;
-    os << PCAInstance.getEigenVectors() << std::endl;
 
-    os << std::endl;
+   
 
     os << "Covariance Matrix: " << std::endl;
     os << PCAInstance.getCovarianceMatrix() << std::endl;
